@@ -3,7 +3,7 @@ Images
 idea/workspace.xml 
 idea/tasks.xml
 idea/**.xml
-
+.idea/AMS.iml
 .idea/codeStyles/Project.xml
 .idea/dbnavigator.xml
 .idea/inspectionProfiles/profiles_settings.xml
