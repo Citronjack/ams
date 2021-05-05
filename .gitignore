@@ -1,0 +1,13 @@
+Images
+*.ipynb
+idea/workspace.xml 
+idea/tasks.xml
+idea/**.xml
+
+.idea/codeStyles/Project.xml
+.idea/dbnavigator.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+
