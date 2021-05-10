@@ -1,8 +1,9 @@
+# git push https://gitlab.lrz.de/ga48rem/ams-lab.git
 import math
 import numpy
 import scipy
 import scipy.stats as st
-
+import warnings
 
 class Counter(object):
     """
@@ -62,6 +63,7 @@ class Counter(object):
         """
         if len(self.values) != 0:
             print('Name: ' + str(self.name) + ', Mean: ' + str(self.get_mean()) + ', Variance: ' + str(self.get_var()))
+
         else:
             print("List for creating report is empty. Please check.")
 
@@ -100,7 +102,7 @@ class TimeIndependentCounter(Counter):
         Note, that we take the estimated variance, not the exact variance.
         """
         # TODO Task 2.3.1: Your code goes here
-        return numpy.square(numpy.sum(self.values-numpy.mean(self.values)))/(len(self.values)-1)
+        return numpy.sum(numpy.square(numpy.array(self.values) - numpy.mean(self.values))) / float(len(self.values) - 1)
 
     def get_stddev(self):
         """
@@ -181,8 +183,8 @@ class TimeDependentCounter(Counter):
         """
         # TODO Task 2.3.2: Your code goes here
         self.values.append(value*float(self.sim.sim_state.now-self.last_timestamp))
+        self.second_moment.append((numpy.square(value)*float(self.sim.sim_state.now-self.last_timestamp)))
         self.last_timestamp = self.sim.sim_state.now
-        self.second_moment.append(numpy.square(self.values)*float(self.sim.sim_state.now-self.last_timestamp))
 
     def get_mean(self):
         """
@@ -197,14 +199,15 @@ class TimeDependentCounter(Counter):
         """
         # TODO Task 2.3.2: Your code goes here
         second_moment_mean = (numpy.sum(self.second_moment)/float(self.last_timestamp-self.first_timestamp))
-        return (second_moment_mean-numpy.square(self.get_mean()))  # *(len(float(self.values)/float(self.values-1))) Why dont I need this n/n-1 like in lecuture ntoes?
+        return second_moment_mean-numpy.square(self.get_mean())
+        # *(len(float(self.values)/float(self.values-1))) Why dont I need this n/n-1 like in lecuture ntoes?
 
     def get_stddev(self):
         """
         Return the standard deviation of the TDC.
         """
         # TODO Task 2.3.2: Your code goes here
-        return numpy.sqrt(self.get_var)
+        return numpy.sqrt(self.get_var())
 
     def reset(self):
         """

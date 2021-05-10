@@ -49,7 +49,7 @@ class Packet(object):
         :return: waiting time
         """
         # TODO Task 2.1.1: Your code goes here
-        if not self.served:
+        if not self.served and not self.completed:
             raise Exception("Oh no, a terrible thing has happened! Worse than SATAN! An error in your code. "
                             "get_waiting_time was called when the packed was not waiting yet!")
 
@@ -61,7 +61,7 @@ class Packet(object):
         :return: service time
         """
         # TODO Task 2.1.1: Your code goes here
-        return self.completed - self.t_start
+        return self.t_complete - self.t_start
 
     def get_system_time(self):
         """

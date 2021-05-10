@@ -38,10 +38,11 @@ class SystemState(object):
         :return: True if server is not busy and served_packet has been added successfully.
         """
         if not self.server_busy:
-            self.server_busy = True
-            self.served_packet = Packet(self.sim, self.sim.sim_state.now-self.last_arrival) if self.buffer.is_empty() else self.buffer.remove()
+            self.served_packet = Packet(self.sim, self.sim.sim_state.now-self.last_arrival) #if self.buffer.is_empty() else self.buffer.remove()
             self.served_packet.start_service()
             self.last_arrival = self.sim.sim_state.now
+            self.server_busy = True
+            return True
         else:
             return False
         # if not self.server_busy:
@@ -72,9 +73,11 @@ class SystemState(object):
         # TODO Task 1.1.3: Your code goes here
         #self.buffer_content = 0 # correct? -- No worng!
         self.server_busy = False
-        self.served_packet.complete_service()
         # TODO Task 2.4.3: Your code goes here somewhere
-        pass
+        packet = self.served_packet
+        packet.complete_service()
+        self.sim.counter_collection.count_packet(packet)
+        self.served_packet = None  # 0 # ATT! 0 DOES NOT WORK!
 
     def start_service(self):
         """

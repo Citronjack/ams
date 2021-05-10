@@ -25,7 +25,7 @@ class FiniteQueue(object):
         :return: true if packet has been enqueued, false if rejected
         """
         # TODO Task 2.2.1: Your code goes here
-        if self.get_queue_length() < self.sim.simparam.S:
+        if self.get_queue_length() < self.sim.sim_param.S:
             self.buffer.put(packet)
             return True
         else:

@@ -46,21 +46,32 @@ class Child(Parent):
 k = Child(1)
 k.sup
 
-l1 = range(0,5)
-l2 = range(0,4)
-l11, = pp.plot(l1)
-l22, = pp.plot(l2)
-pp.legend([l11, l22], ["Peter", "Gabriel"])
-
-pp.show()
 
 
+#pp.show()
 
-def trymebitch(me):
-    return True if me else False
+a = [1,2,3,5,7,88,9,54,65]
+a.sort()
+b = a.index(54)
+print(a)
 
-print(trymebitch(True))
-
-
-a = [1,2,3]
-print(numpy.mean(a))
+#
+# def trymebitch(me):
+#     return True if me else False
+#
+# print(trymebitch(True))
+#
+# histogram1, bins1 = numpy.histogram([i % 7 for i in range(5, 50)], bins=range(0, 7))
+# histogram2, bins2 = numpy.histogram([i % 7 for i in range(10, 55)], bins=range(0, 7))
+#
+# width_of_bins = (bins1[1] - bins1[0]) / 2
+# fig, ax = pp.subplots()
+# rects1 = ax.bar(numpy.ndarray(bins1) - width_of_bins / 2, histogram1, label='sda', color='r')
+# rects2 = ax.bar(numpy.ndarray(bins2) + width_of_bins / 2, histogram2, label='sd', color='g')
+# pp.title("Side by Side stuff")
+# #ax.legend()
+# ax.set_xticks(bins1)
+# fig.tight_layout()
+#
+# pp.show()
+# import matplotlib

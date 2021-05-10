@@ -1,3 +1,10 @@
+__author__ = 'Alexander Prommesberger'
+
+from simulation import Simulation
+from countercollection import *
+from matplotlib import pyplot
+import warnings, numpy
+
 """
 This file should be used to keep all necessary code that is used for the simulation study in part 2 of the programming
 assignment. It contains the tasks 2.7.1 and 2.7.2.
@@ -6,12 +13,85 @@ The function do_simulation_study() should be used to run the simulation routine,
 """
 
 
+class TaskCounterClass:
+
+    def __init__(self, sim):
+        self.mean_ql_counter = TimeIndependentCounter("Queue length")
+        self.mean_wt_counter = TimeIndependentCounter("Waiting time")
+        self.mean_ql_hist = TimeIndependentHistogram(sim, 'q')
+        self.mean_wt_hist = TimeIndependentHistogram(sim, 'w')
+        warnings.filterwarnings('ignore')
+        self.sim = sim
+
+    def reset_all(self):
+        self.mean_ql_counter.reset()
+        self.mean_wt_counter.reset()
+        self.mean_ql_hist.reset()
+        self.mean_wt_hist.reset()
+
+    def count_all(self, sim):
+        self.mean_ql_counter.count(sim.counter_collection.cnt_ql.get_mean())
+        self.mean_wt_counter.count(sim.counter_collection.cnt_wt.get_mean())
+
+        self.mean_ql_hist.count(sim.counter_collection.cnt_ql.get_mean())
+        self.mean_wt_hist.count(sim.counter_collection.cnt_wt.get_mean())
+
+    def report_all(self, sim):
+        pyplot.subplot(2,1,1)
+        self.mean_ql_hist.report()
+        pyplot.title(f"Hist shows the mean Queue Length for {sim.sim_param.S_VALUES}")
+        pyplot.xlabel("Queue size")
+        pyplot.ylabel("approx. distribution")
+        pyplot.subplot(2, 1, 2)
+
+        self.mean_wt_hist.report()
+        pyplot.title(f"Lineplot shows the mean waiting time for {sim.sim_param.S_VALUES}")
+        pyplot.xlabel("Time in ms")
+        pyplot.ylabel("approx. distribution")
+
+        self.mean_ql_counter.report()
+        self.mean_wt_counter.report()
+
+    def report_mean_wt_per_packet(self):
+        pyplot.figure(2)
+        pyplot.title(f"waiting time per packet for {self.sim.sim_param.SIM_TIME}")
+        pyplot.xlabel("packet number")
+        pyplot.ylabel("waiting time")
+        print(len(self.mean_wt_hist.values))
+        print(len(self.sim.counter_collection.hist_wt.values))
+        pyplot.plot(range(1, len(self.sim.counter_collection.cnt_ql.values)+1), (numpy.array(self.sim.counter_collection.cnt_ql.values)))
+
+
 def task_2_7_1():
     """
     Here, you should execute task 2.7.1 (and 2.7.2, if you want).
     """
     # TODO Task 2.7.1: Your code goes here
-    pass
+    sim = Simulation()
+    sim.sim_param.S_VALUES = [5, 6, 7]
+    cNh = TaskCounterClass(sim)
+
+    for S_tmp in sim.sim_param.S_VALUES:
+
+        sim.sim_param.NO_OF_RUNS = 1000
+        sim.sim_param.SIM_TIME = 100 * 1000
+
+        sim.sim_param.S = S_tmp
+        cNh.reset_all()
+        # sim.counter_collection.hist_wt.report()
+        # sim.counter_collection.hist_ql.report()
+        print("-----------------------------------------------")
+        print(f"Gonna do a sim with paras - S:{sim.sim_param.S}")
+        for i in range(sim.sim_param.NO_OF_RUNS):
+            sim.reset()
+            sim.do_simulation()
+            cNh.count_all(sim)
+
+        cNh.report_all(sim)
+        if S_tmp == 5:
+            cNh.report_mean_wt_per_packet()
+            pyplot.show()
+    pyplot.show()
 
 
 def task_2_7_2():
@@ -19,7 +99,30 @@ def task_2_7_2():
     Here, you can execute task 2.7.2 if you want to execute it in a separate function
     """
     # TODO Task 2.7.2: Your code goes here or in the function above
-    pass
+    sim = Simulation()
+    sim.sim_param.S_VALUES = [5, 6, 7]
+    cNh = TaskCounterClass(sim)
+
+    for S_tmp in sim.sim_param.S_VALUES:
+
+        sim.sim_param.NO_OF_RUNS = 1000
+        sim.sim_param.SIM_TIME = 100 * 10000
+
+        sim.sim_param.S = S_tmp
+        cNh.reset_all()
+        # sim.counter_collection.hist_wt.report()
+        # sim.counter_collection.hist_ql.report()
+        print(f"Gonna do a sim with paras - S:{S_tmp}")
+        for i in range(sim.sim_param.NO_OF_RUNS):
+            sim.reset()
+            sim.do_simulation()
+            cNh.count_all(sim)
+
+        cNh.report_all(sim)
+        if S_tmp == 5:
+            cNh.report_mean_wt_per_packet()
+            pyplot.show()
+    pyplot.show()
 
 
 def do_simulation_study(sim, print_queue_length=False, print_waiting_time=True):

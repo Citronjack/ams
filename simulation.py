@@ -5,7 +5,7 @@ from simresult import SimResult
 from simparam import SimParam
 
 
-# from countercollection import CounterCollection
+from countercollection import CounterCollection
 # from rng import RNG, ExponentialRNS, UniformRNS
 
 
@@ -24,7 +24,7 @@ class Simulation(object):
         self.event_chain = EventChain()
         self.sim_result = SimResult(self)
         # TODO Task 2.4.3: Uncomment the line below
-        # self.counter_collection = CounterCollection()
+        self.counter_collection = CounterCollection(self)
         # TODO Task 3.1.2: Uncomment the line below and replace the "None"
         """
         if no_seed:
@@ -44,7 +44,7 @@ class Simulation(object):
         self.event_chain = EventChain()
         self.sim_result = SimResult(self)
         # TODO Task 2.4.3: Uncomment the line below
-        # self.counter_collection = CounterCollection()
+        self.counter_collection = CounterCollection(self)
         # TODO Task 3.1.2: Uncomment the line below and replace the "None"
         """
         if no_seed:
@@ -77,6 +77,8 @@ class Simulation(object):
             if self.sim_state.now <= event.timestamp:
                 self.sim_state.now = event.timestamp
                 event.process()
+                # TODO Task 2.4.3: Your code goes here somewhere
+                self.counter_collection.count_queue()
             # WTF to bad to program, my timestamp were bigger than event time! - fixed, mistake in random time gern
             else:
                 print(f"The Simulation time is bigger than the event time! sim_state.now={self.sim_state.now} and "
@@ -88,8 +90,6 @@ class Simulation(object):
             e.process()
             You can use and adapt the following lines in your realization
             """
-
-            # TODO Task 2.4.3: Your code goes here somewhere
 
         # gather results for sim_result object
         self.sim_result.gather_results()

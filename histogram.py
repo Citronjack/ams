@@ -65,6 +65,7 @@ class Histogram(object):
             """
             Plot line plot - mainly thought for mean waiting time
             """
+            self.histogram = self.histogram/sum(self.histogram)
             pyplot.plot(self.bin_mids, self.histogram, "+-", label='S=' + str(self.sim.sim_param.S))
 
         elif diag_type == "side-by-side":
@@ -72,6 +73,22 @@ class Histogram(object):
             Plot side-by-side histogram plot - mainly thought for mean queue length
             """
             # TODO Task 2.4.4: Your code goes here somewhere
+            # wodth might be to small
+            width = 1
+            width_of_single_bins = (width)/len(self.sim.sim_param.S_VALUES)-0.1
+
+            idx = self.sim.sim_param.S_VALUES.index(self.sim.sim_param.S)+1
+            pos_of_bins = idx*width_of_single_bins+numpy.array(self.bins[0:-1])
+            #self.histogram = self.histogram/sum(self.histogram)
+            pyplot.bar(pos_of_bins, self.histogram, width=width_of_single_bins, label=f"{self.type}, "
+                                                                                      f"S:" f" {self.sim.sim_param.S}")
+            # fig, ax = pyplot.subplot()
+            # rects1 = ax.bar(numpy.ndarray(self.bins)-width_of_bins/2, self.histogram, label=self.type, color='r')
+            # rects2 = ax.bar(numpy.ndarray(self.bins)+width_of_bins/2, self.histogram, label="No idea", color='g')
+            # pyplot.title("Side by Side stuff")
+            # ax.legend()
+            # ax.set_xticks(self.bins)
+            # pyplot.show()
 
         elif diag_type == "histogram":
             """
@@ -79,7 +96,7 @@ class Histogram(object):
             (easier but worse interpretation than side-by-side)
             """
             weights = numpy.full(len(self.values), 1.0 / float(len(self.values)))
-            pyplot.hist(self.values, self.bins, alpha=0.5, label='S='+str(self.sim.sim_param.S), rwidth=.7, weights=weights)
+            pyplot.hist(self.values, self.bins, alpha=0.5, label='S='+str(self.sim.sim_param.S), rwidth=.7)
 
         else:
             raise TypeError("Undefined histogram plotting types: %s" % diag_type)
@@ -111,7 +128,7 @@ class TimeIndependentHistogram(Histogram):
         Add new value to histogram, i.e., the internal array.
         """
         # TODO Task 2.4.1: Your code goes here
-        pass
+        self.values.append(value)
 
     def report(self):
         """
@@ -124,7 +141,7 @@ class TimeIndependentHistogram(Histogram):
         After generating the report, the plot function is called (see this function in super class).
         """
         if len(self.values) != 0:
-
+            wt = numpy.array([numpy.power(float(len(self.values)), -1) for _ in range(len(self.values))])
             if self.type == "q":
 
                 # TODO Task 2.4.1: Your code goes here
@@ -132,7 +149,9 @@ class TimeIndependentHistogram(Histogram):
                 Use numpy.histogram to calculate self.histogram and self.bins.
                 Afterwards call the plot function using self.plot() with adequate parameters
                 """
-                pass
+                self.histogram, self.bins = numpy.histogram(self.values, bins=self.sim.sim_param.S+1,
+                                                            range=(-0.5, self.sim.sim_param.S+0.5), weights=wt)
+                self.plot("side-by-side")
 
             elif self.type == "bp":
 
@@ -141,7 +160,9 @@ class TimeIndependentHistogram(Histogram):
                 Use numpy.histogram to calculate self.histogram and self.bins.
                 Afterwards call the plot function using self.plot() with adequate parameters
                 """
-                pass
+                # one bin for 2% until now, gonna try it out
+                self.histogram, self.bins = numpy.histogram(self.values, bins=50, range=(0, 1), weights=wt)
+                self.plot("histogram")
 
             elif self.type == "w":
 
@@ -150,7 +171,8 @@ class TimeIndependentHistogram(Histogram):
                 Use numpy.histogram to calculate self.histogram and self.bins.
                 Afterwards call the plot function using self.plot() with adequate parameters
                 """
-                pass
+                self.histogram, self.bins = numpy.histogram(self.values, bins=30, range=(0, 4000), weights=wt)
+                self.plot("line")
 
             else:
                 raise TypeError("Undefined histogram types: %s" % self.type)
@@ -182,10 +204,15 @@ class TimeDependentHistogram(Histogram):
         Consider the duration of this value as well.
         """
         # TODO Task 2.4.2: Your code goes here
-        pass
+        self.weights.append(self.sim.sim_state.now - self.last_timestamp)
+        self.values.append(self.values)
+        self.last_timestamp = self.sim.sim_state.now
 
     def reset(self):
         # TODO Task 2.4.2: Your code goes here
+        self.first_timestamp = self.sim.sim_state.now
+        self.last_timestamp = self.sim.sim_state.now
+        self.weights = []
         Histogram.reset(self)
 
     def report(self):

@@ -8,8 +8,8 @@ class SimParam(object):
 
         # current buffer spaces and minimal buffer spaces
         self.S_MIN = 4
-        self.S = self.S_MIN  # waiting queue length
-
+        self.S_VALUES = [5, 6, 7]
+        self.S = self.S_VALUES[0]  # waiting queue length
         # inter-arrival-time and simulation time in ms
         self.IAT = 490
         self.SIM_TIME = 100000
@@ -21,7 +21,8 @@ class SimParam(object):
         self.MAX_DROPPED = 10
 
         # set seed for random number generation
-        self.SEED = 3688679
+        #self.SEED = 3688679
+        self.SEED = 0
         self.SEED_IAT = 0
         self.SEED_ST = 1
 

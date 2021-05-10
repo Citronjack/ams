@@ -30,7 +30,7 @@ class CounterCollection(object):
 
         # system utilization
         self.cnt_sys_util = TimeDependentCounter(self.sim)
-        """
+
         # blocking probability
         self.cnt_bp = TimeIndependentCounter("bp")
         self.hist_bp = TimeIndependentHistogram(self.sim, "bp")
@@ -41,7 +41,7 @@ class CounterCollection(object):
         self.cnt_iat_syst = TimeIndependentCrosscorrelationCounter("inter-arrival time vs. system time")
         self.cnt_st_syst = TimeIndependentCrosscorrelationCounter("service time vs. system time")
         self.acnt_wt = TimeIndependentAutocorrelationCounter("waiting time with lags 1 to 20", max_lag=20)
-        """
+
 
     def reset(self):
         """
@@ -54,7 +54,7 @@ class CounterCollection(object):
         self.hist_ql.reset()
 
         self.cnt_sys_util.reset()
-        """
+
         self.cnt_bp.reset()
         self.hist_bp.reset()
 
@@ -63,7 +63,7 @@ class CounterCollection(object):
         self.cnt_iat_syst.reset()
         self.cnt_st_syst.reset()
         self.acnt_wt.reset()
-        """
+
 
     def report(self):
         """
@@ -91,7 +91,7 @@ class CounterCollection(object):
         """
         self.cnt_wt.count(packet.get_waiting_time())
         self.hist_wt.count(packet.get_waiting_time())
-        """
+        """"
         self.cnt_iat_wt.count(packet.get_interarrival_time(), packet.get_waiting_time())
         self.cnt_iat_st.count(packet.get_interarrival_time(), packet.get_service_time())
         self.cnt_iat_syst.count(packet.get_interarrival_time(), packet.get_system_time())
@@ -110,3 +110,8 @@ class CounterCollection(object):
         self.hist_ql.count(self.sim.system_state.get_queue_length())
 
         # TODO Task 2.5.1: Your code goes here
+        if not self.sim.system_state.server_busy:
+            self.cnt_sys_util.count(0)
+        else:
+            self.cnt_sys_util.count(1)
+

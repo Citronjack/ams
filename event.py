@@ -99,33 +99,34 @@ class CustomerArrival(SimEvent):
         evnet = CustomerArrival(self.sim, self.sim.sim_state.now + iat)
         self.sim.event_chain.insert(evnet)
 
-        # if self.sim.system_state.add_packet_to_server():
-        #     self.sim.sim_state.packet_accepted()
-        #     service_time = random.randint(1, 1000)
-        #     event = ServiceCompletion(self.sim, self.sim.sim_state.now + service_time)
-        #     self.sim.event_chain.insert(event)
-        #
-        # if self.sim.add_packet_to_queue():
-        #     self.sim.sim_state.packet_accepted()
-        #
-        # else:
-        #     self.sim.system_state.packet_dropped()
+        if self.sim.system_state.add_packet_to_server():
+            self.sim.sim_state.packet_accepted()
+            service_time = random.randint(1, 1000)
+            event = ServiceCompletion(self.sim, self.sim.sim_state.now + service_time)
+            self.sim.event_chain.insert(event)
 
+        elif self.sim.system_state.add_packet_to_queue():
+            self.sim.sim_state.packet_accepted()
+
+        else:
+            self.sim.sim_state.packet_dropped()
+
+        "An example of bad programming bnecause when you change the system everything goes to shit!"
         # my stuff would haven worked because I would have raised out the unctions in a different way so that it can
         # be checked of a packed should be added to the queue without raising the buffer content, for example with a
         # peak flag!1
 
-        if not self.sim.system_state.add_packet_to_queue(True):
-            self.sim.sim_state.packet_dropped()
-        else:  # either buffer or process
-            if self.sim.system_state.add_packet_to_server():
-                service_time = random.randint(1, 1000)
-                # print(service_time)
-                event = ServiceCompletion(self.sim, self.sim.sim_state.now + service_time)
-                self.sim.event_chain.insert(event)
-            else:
-                self.sim.system_state.add_packet_to_queue()
-            self.sim.sim_state.packet_accepted() # same for queue and processed packets
+        # if not self.sim.system_state.add_packet_to_queue(True):
+        #     self.sim.sim_state.packet_dropped()
+        # else:  # either buffer or process
+        #     if self.sim.system_state.add_packet_to_server():
+        #         service_time = random.randint(1, 1000)
+        #         # print(service_time)
+        #         event = ServiceCompletion(self.sim, self.sim.sim_state.now + service_time)
+        #         self.sim.event_chain.insert(event)
+        #     else:
+        #         self.sim.system_state.add_packet_to_queue()
+        #     self.sim.sim_state.packet_accepted() # same for queue and processed packets
 
 
 class ServiceCompletion(SimEvent):

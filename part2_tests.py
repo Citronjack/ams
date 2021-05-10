@@ -209,10 +209,11 @@ class DESTestExtended(unittest.TestCase):
         """
         # results = [17, 9, 11, 12, 14]
         results = [17, 17, 27, 14, 10]
-        for seed in range(5):
+        for seed in range(0,5):
             DESTestExtended.sim.reset()
             DESTestExtended.sim.sim_param.SEED = seed
             random.seed(seed)
+            print(f"The seed is: {seed}")
             self.assertEqual(DESTestExtended.sim.do_simulation().packets_dropped, results[seed],
                              msg="Error in Simulation. Wrong number of dropped packets for given seed.")
 
