@@ -1,3 +1,6 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
+
 import unittest
 from statistictests import ChiSquare
 import numpy

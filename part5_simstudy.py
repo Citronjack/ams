@@ -1,3 +1,5 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 from counter import TimeIndependentCounter
 from simulation import Simulation
 from matplotlib import pyplot

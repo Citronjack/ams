@@ -1,4 +1,7 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 import numpy
+import warnings
 from matplotlib import pyplot
 
 
@@ -80,8 +83,10 @@ class Histogram(object):
             idx = self.sim.sim_param.S_VALUES.index(self.sim.sim_param.S)+1
             pos_of_bins = idx*width_of_single_bins+numpy.array(self.bins[0:-1])
             #self.histogram = self.histogram/sum(self.histogram)
+            warnings.filterwarnings('ignore')
             pyplot.bar(pos_of_bins, self.histogram, width=width_of_single_bins, label=f"{self.type}, "
                                                                                       f"S:" f" {self.sim.sim_param.S}")
+
             # fig, ax = pyplot.subplot()
             # rects1 = ax.bar(numpy.ndarray(self.bins)-width_of_bins/2, self.histogram, label=self.type, color='r')
             # rects2 = ax.bar(numpy.ndarray(self.bins)+width_of_bins/2, self.histogram, label="No idea", color='g')

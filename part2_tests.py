@@ -1,3 +1,5 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 import unittest
 from simulation import Simulation
 from systemstate import SystemState
@@ -209,7 +211,7 @@ class DESTestExtended(unittest.TestCase):
         """
         # results = [17, 9, 11, 12, 14]
         results = [17, 17, 27, 14, 10]
-        for seed in range(0,5):
+        for seed in range(0, 5):
             DESTestExtended.sim.reset()
             DESTestExtended.sim.sim_param.SEED = seed
             random.seed(seed)

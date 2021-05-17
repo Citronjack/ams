@@ -1,3 +1,7 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
+
+
 class ChiSquare(object):
 
     def __init__(self, emp_x, emp_n, name="default"):

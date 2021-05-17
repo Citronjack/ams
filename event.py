@@ -1,3 +1,5 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 import heapq
 import random
 
@@ -96,8 +98,8 @@ class CustomerArrival(SimEvent):
         """
         # TODO Task 1.3.2: Your code goes here
         iat = self.sim.sim_param.IAT
-        evnet = CustomerArrival(self.sim, self.sim.sim_state.now + iat)
-        self.sim.event_chain.insert(evnet)
+        event = CustomerArrival(self.sim, self.sim.sim_state.now + iat)
+        self.sim.event_chain.insert(event)
 
         if self.sim.system_state.add_packet_to_server():
             self.sim.sim_state.packet_accepted()

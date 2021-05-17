@@ -1,4 +1,5 @@
 __author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 
 from simulation import Simulation
 from countercollection import *
@@ -20,7 +21,7 @@ class TaskCounterClass:
         self.mean_wt_counter = TimeIndependentCounter("Waiting time")
         self.mean_ql_hist = TimeIndependentHistogram(sim, 'q')
         self.mean_wt_hist = TimeIndependentHistogram(sim, 'w')
-        warnings.filterwarnings('ignore')
+        #warnings.filterwarnings('ignore')
         self.sim = sim
 
     def reset_all(self):
@@ -88,9 +89,9 @@ def task_2_7_1():
             cNh.count_all(sim)
 
         cNh.report_all(sim)
-        if S_tmp == 5:
-            cNh.report_mean_wt_per_packet()
-            pyplot.show()
+        # if S_tmp == 5:
+        #     cNh.report_mean_wt_per_packet()
+        #     #pyplot.show()
     pyplot.show()
 
 
@@ -119,9 +120,9 @@ def task_2_7_2():
             cNh.count_all(sim)
 
         cNh.report_all(sim)
-        if S_tmp == 5:
-            cNh.report_mean_wt_per_packet()
-            pyplot.show()
+        # if S_tmp == 5:
+        #     cNh.report_mean_wt_per_packet()
+        #     pyplot.show()
     pyplot.show()
 
 

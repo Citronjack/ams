@@ -1,3 +1,5 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 from counter import TimeIndependentCrosscorrelationCounter, TimeIndependentAutocorrelationCounter
 from counter import TimeIndependentCounter, TimeDependentCounter
 from histogram import TimeIndependentHistogram, TimeDependentHistogram
@@ -34,14 +36,14 @@ class CounterCollection(object):
         # blocking probability
         self.cnt_bp = TimeIndependentCounter("bp")
         self.hist_bp = TimeIndependentHistogram(self.sim, "bp")
-
+        """
         # correlations
         self.cnt_iat_wt = TimeIndependentCrosscorrelationCounter("inter-arrival time vs. waiting time")
         self.cnt_iat_st = TimeIndependentCrosscorrelationCounter("inter-arrival time vs. service time")
         self.cnt_iat_syst = TimeIndependentCrosscorrelationCounter("inter-arrival time vs. system time")
         self.cnt_st_syst = TimeIndependentCrosscorrelationCounter("service time vs. system time")
         self.acnt_wt = TimeIndependentAutocorrelationCounter("waiting time with lags 1 to 20", max_lag=20)
-
+        """
 
     def reset(self):
         """
@@ -58,12 +60,13 @@ class CounterCollection(object):
         self.cnt_bp.reset()
         self.hist_bp.reset()
 
+        """
         self.cnt_iat_wt.reset()
         self.cnt_iat_st.reset()
         self.cnt_iat_syst.reset()
         self.cnt_st_syst.reset()
         self.acnt_wt.reset()
-
+        """
 
     def report(self):
         """
@@ -114,4 +117,3 @@ class CounterCollection(object):
             self.cnt_sys_util.count(0)
         else:
             self.cnt_sys_util.count(1)
-

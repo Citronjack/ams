@@ -1,3 +1,5 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
 # git push https://gitlab.lrz.de/ga48rem/ams-lab.git
 import math
 import numpy

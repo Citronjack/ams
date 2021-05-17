@@ -1,3 +1,6 @@
+__author__ = 'Alexander Prommesberger'
+__matriclenumber__ = '03688679'
+
 from finitequeue import FiniteQueue
 from packet import Packet
 
