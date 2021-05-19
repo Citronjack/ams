@@ -27,7 +27,6 @@ class EventChain(object):
         # TODO Task 1.2.2: Your code goes here
         heapq.heappush(self.event_list, event)
 
-
     def remove_oldest_event(self):
         """
         Remove event with smallest timestamp (if timestamps are equal then smallest priority value i.e.
@@ -97,13 +96,15 @@ class CustomerArrival(SimEvent):
         Implement according to the task description.
         """
         # TODO Task 1.3.2: Your code goes here
-        iat = self.sim.sim_param.IAT
+        # iat = self.sim.sim_param.IAT
+        iat = int(self.sim.rng.get_iat()*1000)
         event = CustomerArrival(self.sim, self.sim.sim_state.now + iat)
         self.sim.event_chain.insert(event)
 
         if self.sim.system_state.add_packet_to_server():
             self.sim.sim_state.packet_accepted()
-            service_time = random.randint(1, 1000)
+            # service_time = random.randint(1, 1000)
+            service_time = int(self.sim.rng.get_st()*1000)
             event = ServiceCompletion(self.sim, self.sim.sim_state.now + service_time)
             self.sim.event_chain.insert(event)
 
@@ -155,7 +156,9 @@ class ServiceCompletion(SimEvent):
         self.sim.system_state.complete_service()
         # if somethiong in buffer start service again
         if self.sim.system_state.start_service():
-            event = ServiceCompletion(self.sim, self.sim.sim_state.now + random.randint(1, 1000))
+            # service_time = random.randomint(1, 1000)
+            service_time = int(self.sim.rng.get_st()*1000)
+            event = ServiceCompletion(self.sim, self.sim.sim_state.now + service_time)
             self.sim.event_chain.insert(event)
 
 

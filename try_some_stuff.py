@@ -55,6 +55,12 @@ a.sort()
 b = a.index(54)
 print(a)
 
+pp.figure()
+b = ['erster', 'zweriter']
+for i in range(2):
+    pp.plot(a, label=f"{b[i]}")
+pp.legend()
+pp.show()
 #
 # def trymebitch(me):
 #     return True if me else False

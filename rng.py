@@ -2,6 +2,7 @@ __author__ = 'Alexander Prommesberger'
 __matriclenumber__ = '03688679'
 import math
 from random import Random
+import numpy as np
 
 
 class RNG(object):
@@ -81,7 +82,7 @@ class ExponentialRNS(RNS):
     :param the_seed: optional seed for the random number stream
     """
     
-    def __init__(self, params, the_seed=None):
+    def __init__(self, la, the_seed=None):
         """
         Initialize Exponential RNS and set the parameters.
         """
@@ -90,9 +91,10 @@ class ExponentialRNS(RNS):
         """
         Also modify the list of input parameters according to the needs of this distribution.
         """
-        pass
+        #self.params = la_para
+        self.la = la
         
-    def set_parameters(self, params):
+    def set_parameters(self, la):
         """
         Set parameters of the distribution.
         """
@@ -100,14 +102,16 @@ class ExponentialRNS(RNS):
         """
         Also modify the list of input parameters according to the needs of this distribution.
         """
-        pass
+        self.la = la
         
     def next(self):
         """
         Generate the next random number using the inverse transform method.
         """
+        # Calculated x=-ln(1-u)/lambda
         # TODO Task 3.1.1: Your code goes here
-        pass
+        u = self.r.uniform(0, 1)
+        return -np.log(1-u)/float(self.la)
         
 
 class UniformRNS(RNS):
@@ -118,7 +122,7 @@ class UniformRNS(RNS):
     :param the_seed: optional seed for the random number stream
     """
     
-    def __init__(self, params, the_seed=None):
+    def __init__(self, a_b_params_list, the_seed=None):
         """
         Initialize Uniform RNS and set the parameters.
         """
@@ -127,7 +131,10 @@ class UniformRNS(RNS):
         """
         Also modify the list of input parameters according to the needs of this distribution.
         """
-        pass
+        self.params = a_b_params_list
+        self.a = None
+        self.b = None
+        self.set_parameters(self.params)
         
     def set_parameters(self, params):
         """
@@ -137,11 +144,16 @@ class UniformRNS(RNS):
         """
         Also modify the list of input parameters according to the needs of this distribution.
         """
-        pass
+        self.a = params[0]
+        self.b = params[1]
+        if self.a > self.b:
+            raise (f"In the uniformRNS the borders are wrong a>b! --> b<a must be statisfied!")
         
     def next(self):
         """
         Generate the next random number using the inverse transform method.
         """
+        # I calculated x = u*(b-a)+a for inverse method
         # TODO Task 3.1.1: Your code goes here
-        pass
+        u = self.r.uniform(0, 1)
+        return u*(self.b - self.a) + self.a

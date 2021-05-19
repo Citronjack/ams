@@ -22,6 +22,7 @@ class DESTestRNG(unittest.TestCase):
         DESTestRNG.sim.sim_param.SEED_ST = 1
 
         for rho in [.01, .5, .8, .9]:
+            print(rho)
             DESTestRNG.sim.sim_param.RHO = rho
             DESTestRNG.sim.reset()
             r = DESTestRNG.sim.do_simulation().system_utilization

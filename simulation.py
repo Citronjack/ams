@@ -8,7 +8,7 @@ from simparam import SimParam
 
 
 from countercollection import CounterCollection
-# from rng import RNG, ExponentialRNS, UniformRNS
+from rng import RNG, ExponentialRNS, UniformRNS
 
 
 class Simulation(object):
@@ -28,12 +28,21 @@ class Simulation(object):
         # TODO Task 2.4.3: Uncomment the line below
         self.counter_collection = CounterCollection(self)
         # TODO Task 3.1.2: Uncomment the line below and replace the "None"
-        """
+
         if no_seed:
-            self.rng = RNG(None, None)
+            e1_mean = 1
+            e1 = ExponentialRNS(float(1/e1_mean))
+            e2_mean = (self.sim_param.RHO)
+            e2 = ExponentialRNS(float(1 / e2_mean))
+            #u = UniformRNS([0, sim_param.RHO], self.sim_param.SEED)
+            self.rng = RNG(e1, e2)
         else:
-            self.rng = RNG(None, None)
-        """
+            e1_mean = 1
+            e1 = ExponentialRNS(float(1/e1_mean), self.sim_param.SEED_IAT)
+            e2_mean = (self.sim_param.RHO)
+            e2 = ExponentialRNS(float(1 / e2_mean), self.sim_param.SEED_ST)
+            #u = UniformRNS([0, sim_param.RHO], self.sim_param.SEED)
+            self.rng = RNG(e1, e2)
 
     def reset(self, no_seed=False):
         """
@@ -48,12 +57,22 @@ class Simulation(object):
         # TODO Task 2.4.3: Uncomment the line below
         self.counter_collection = CounterCollection(self)
         # TODO Task 3.1.2: Uncomment the line below and replace the "None"
-        """
-        if no_seed:
-            self.rng = RNG(None, None)
-        else:
-            self.rng = RNG(None, None)
-        """
+        self.rng.iat_rns.set_parameters(1.)
+        self.rng.st_rns.set_parameters(1./float(self.sim_param.RHO))
+        # if no_seed:
+        #     e1_mean = 1
+        #     e1 = ExponentialRNS(float(1./e1_mean))
+        #     e2_mean = self.sim_param.RHO
+        #     e2 = ExponentialRNS(float(1. / e2_mean))
+        #     #u = UniformRNS([0, sim_param.RHO], self.sim_param.SEED)
+        #     self.rng = RNG(e1, e2)
+        # else:
+        #     e1_mean = 1
+        #     e1 = ExponentialRNS(float(1./e1_mean), self.sim_param.SEED_IAT)
+        #     e2_mean = self.sim_param.RHO
+        #     e2 = ExponentialRNS(float(1. / e2_mean), self.sim_param.SEED_ST)
+        #     #u = UniformRNS([0, sim_param.RHO], self.sim_param.SEED)
+        #     self.rng = RNG(e1, e2)
 
     def do_simulation(self):
         """
@@ -78,9 +97,9 @@ class Simulation(object):
 
             if self.sim_state.now <= event.timestamp:
                 self.sim_state.now = event.timestamp
+                self.counter_collection.count_queue()
                 event.process()
                 # TODO Task 2.4.3: Your code goes here somewhere
-                self.counter_collection.count_queue()
             # WTF to bad to program, my timestamp were bigger than event time! - fixed, mistake in random time gern
             else:
                 print(f"The Simulation time is bigger than the event time! sim_state.now={self.sim_state.now} and "
