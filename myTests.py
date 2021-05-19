@@ -12,6 +12,6 @@ from part2_tests import DESTestExtended
 #
 # print(a)
 
-task_2_7_1()
+task_2_7_2()
 pyplot.show()
 

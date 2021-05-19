@@ -16,13 +16,14 @@ The function do_simulation_study() should be used to run the simulation routine,
 
 class TaskCounterClass:
 
-    def __init__(self, sim):
+    def __init__(self, sim, plot_per_packet=False):
         self.mean_ql_counter = TimeIndependentCounter("Queue length")
         self.mean_wt_counter = TimeIndependentCounter("Waiting time")
         self.mean_ql_hist = TimeIndependentHistogram(sim, 'q')
         self.mean_wt_hist = TimeIndependentHistogram(sim, 'w')
-        #warnings.filterwarnings('ignore')
         self.sim = sim
+        self.wt_per_packet = []
+        self.plot_per_packet = plot_per_packet
 
     def reset_all(self):
         self.mean_ql_counter.reset()
@@ -34,43 +35,56 @@ class TaskCounterClass:
         self.mean_ql_counter.count(sim.counter_collection.cnt_ql.get_mean())
         self.mean_wt_counter.count(sim.counter_collection.cnt_wt.get_mean())
 
+        # extra for waiting time per packet
+        self.wt_per_packet.append(sim.counter_collection.cnt_ql.values)
+        print(len(sim.counter_collection.cnt_ql.values))
         self.mean_ql_hist.count(sim.counter_collection.cnt_ql.get_mean())
         self.mean_wt_hist.count(sim.counter_collection.cnt_wt.get_mean())
 
     def report_all(self, sim):
-        pyplot.subplot(2,1,1)
-        self.mean_ql_hist.report()
-        pyplot.title(f"Hist shows the mean Queue Length for {sim.sim_param.S_VALUES}")
-        pyplot.xlabel("Queue size")
-        pyplot.ylabel("approx. distribution")
-        pyplot.subplot(2, 1, 2)
+        if not self.plot_per_packet:
+            pyplot.figure(1)
+            pyplot.subplot(2,1,1)
+            self.mean_ql_hist.report()
+            pyplot.title(f"Hist shows the mean Queue Length for {sim.sim_param.S_VALUES}")
+            pyplot.xlabel("Queue size")
+            pyplot.ylabel("approx. distribution")
+            pyplot.subplot(2, 1, 2)
 
-        self.mean_wt_hist.report()
-        pyplot.title(f"Lineplot shows the mean waiting time for {sim.sim_param.S_VALUES}")
-        pyplot.xlabel("Time in ms")
-        pyplot.ylabel("approx. distribution")
+            self.mean_wt_hist.report()
+            pyplot.title(f"Lineplot shows the mean waiting time for {sim.sim_param.S_VALUES}")
+            pyplot.xlabel("Time in ms")
+            pyplot.ylabel("approx. distribution")
 
-        self.mean_ql_counter.report()
-        self.mean_wt_counter.report()
+            self.mean_ql_counter.report()
+            self.mean_wt_counter.report()
+
+        if sim.sim_param.S == 5 and self.plot_per_packet:
+            self.report_mean_wt_per_packet()
 
     def report_mean_wt_per_packet(self):
-        pyplot.figure(2)
-        pyplot.title(f"waiting time per packet for {self.sim.sim_param.SIM_TIME}")
+        pyplot.figure(3)
+        pyplot.title(f"Per packet waiting time for {self.sim.sim_param.SIM_TIME}")
         pyplot.xlabel("packet number")
         pyplot.ylabel("waiting time")
-        print(len(self.mean_wt_hist.values))
-        print(len(self.sim.counter_collection.hist_wt.values))
-        pyplot.plot(range(1, len(self.sim.counter_collection.cnt_ql.values)+1), (numpy.array(self.sim.counter_collection.cnt_ql.values)))
+        """ TODO: """
+        mx = 666
+        for row in self.wt_per_packet:
+            mx = len(row) if len(row) < mx else mx
+        arr_tmp = numpy.zeros(mx)
+        for row in self.wt_per_packet:
+            arr_tmp += numpy.array(row[:mx])
+        pyplot.plot(range(mx), arr_tmp/len(self.wt_per_packet))
 
 
-def task_2_7_1():
+def task_2_7_1(plot_per_packet=False):
     """
     Here, you should execute task 2.7.1 (and 2.7.2, if you want).
     """
     # TODO Task 2.7.1: Your code goes here
     sim = Simulation()
     sim.sim_param.S_VALUES = [5, 6, 7]
-    cNh = TaskCounterClass(sim)
+    cNh = TaskCounterClass(sim, plot_per_packet)
 
     for S_tmp in sim.sim_param.S_VALUES:
 
@@ -89,20 +103,18 @@ def task_2_7_1():
             cNh.count_all(sim)
 
         cNh.report_all(sim)
-        # if S_tmp == 5:
-        #     cNh.report_mean_wt_per_packet()
-        #     #pyplot.show()
+
     pyplot.show()
 
 
-def task_2_7_2():
+def task_2_7_2(plot_per_packet=False):
     """
     Here, you can execute task 2.7.2 if you want to execute it in a separate function
     """
     # TODO Task 2.7.2: Your code goes here or in the function above
     sim = Simulation()
     sim.sim_param.S_VALUES = [5, 6, 7]
-    cNh = TaskCounterClass(sim)
+    cNh = TaskCounterClass(sim, plot_per_packet)
 
     for S_tmp in sim.sim_param.S_VALUES:
 
@@ -120,9 +132,7 @@ def task_2_7_2():
             cNh.count_all(sim)
 
         cNh.report_all(sim)
-        # if S_tmp == 5:
-        #     cNh.report_mean_wt_per_packet()
-        #     pyplot.show()
+
     pyplot.show()
 
 
