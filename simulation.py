@@ -78,9 +78,9 @@ class Simulation(object):
 
             if self.sim_state.now <= event.timestamp:
                 self.sim_state.now = event.timestamp
-                event.process()
                 # TODO Task 2.4.3: Your code goes here somewhere
                 self.counter_collection.count_queue()
+                event.process()
             # WTF to bad to program, my timestamp were bigger than event time! - fixed, mistake in random time gern
             else:
                 print(f"The Simulation time is bigger than the event time! sim_state.now={self.sim_state.now} and "
