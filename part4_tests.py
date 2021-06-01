@@ -43,6 +43,8 @@ class DESTest(unittest.TestCase):
                                    msg="Error in TimeIndependentAutocorrelationCounter. Covariance calculation is wrong.")
             self.assertAlmostEqual(tiacc.get_auto_cor(lag), results_cor[lag], delta=.05,
                                    msg="Error in TimeIndependentAutocorrelationCounter. Correlation calculation is wrong.")
+            print(f"COV: cov_diff={tiacc.get_auto_cov(lag)-results_cov[lag]}")
+            print(f"COR: cor_diff={tiacc.get_auto_cor(lag) - results_cor[lag]}")
 
 
 if __name__ == '__main__':

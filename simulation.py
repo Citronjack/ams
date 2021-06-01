@@ -56,6 +56,7 @@ class Simulation(object):
         self.sim_result = SimResult(self)
         # TODO Task 2.4.3: Uncomment the line below
         self.counter_collection = CounterCollection(self)
+        #self.counter_collection.reset()
         # TODO Task 3.1.2: Uncomment the line below and replace the "None"
         self.rng.iat_rns.set_parameters(1.)
         self.rng.st_rns.set_parameters(1./float(self.sim_param.RHO))
@@ -73,6 +74,39 @@ class Simulation(object):
         #     e2 = ExponentialRNS(float(1. / e2_mean), self.sim_param.SEED_ST)
         #     #u = UniformRNS([0, sim_param.RHO], self.sim_param.SEED)
         #     self.rng = RNG(e1, e2)
+
+    def do_simulation_sol(self):
+        """
+        Do one simulation run. Initialize simulation and create first and last event.
+        After that, one after another event is processed.
+        :return: SimResult object
+        """
+        # insert first and last event
+        self.event_chain.insert(CustomerArrival(self, 0))
+        self.event_chain.insert(SimulationTermination(self, self.sim_param.SIM_TIME))
+
+        # start simulation (run)
+        while not self.sim_state.stop:
+
+            # get next simevent from events
+            e = self.event_chain.remove_oldest_event()
+            if e:
+                # if event exists and timestamps are ok, process the event
+                if self.sim_state.now <= e.timestamp:
+                    self.sim_state.now = e.timestamp
+                    self.counter_collection.count_queue()
+                    e.process()
+                else:
+                    print('NOW: ' + str(self.sim_state.now) + ', EVENT TIMESTAMP: ' + str(e.timestamp))
+                    raise RuntimeError("ERROR: TIMESTAMP OF EVENT IS SMALLER THAN CURRENT TIME.")
+
+            else:
+                print('Event chain is empty. Abort')
+                self.sim_state.stop = True
+
+        # gather results for sim_result object
+        self.sim_result.gather_results()
+        return self.sim_result
 
     def do_simulation(self):
         """
@@ -126,13 +160,33 @@ class Simulation(object):
         """
         # insert first event
         self.event_chain.insert(CustomerArrival(self, 0))
-
+        #self.event_chain.insert(SimulationTermination(self, self.sim_param.SIM_TIME))
         # start simulation (run)
         while not self.sim_state.stop:
             # TODO Task 4.3.2: Your code goes here
             # TODO Task 5.2.2: Your code goes here
-            pass
+            try:
+                event = self.event_chain.remove_oldest_event()
+            except IndexError:
+                print("------------------------ Heaplist is empty! Aborting Simulation... ------------------------")
+                self.sim_state.stop = True
+                break
 
-        # gather results for sim_result object
+            if self.sim_state.now <= event.timestamp:
+                self.sim_state.now = event.timestamp
+                self.counter_collection.count_queue()
+                event.process()
+                if event.priority == 0:
+                    self.counter_collection.served_pkts += 1
+                if self.counter_collection.served_pkts >= n:
+                    self.sim_state.stop = True
+            else:
+                self.sim_state.stop = True
+                raise RuntimeError(f"The Simulation time is bigger than the event time! sim_state.now={self.sim_state.now} and "
+                      f"event.time={event.timestamp}")
+            # if self.counter_collection.served_pkts == n: # This implementation lead to error --> packets not counted correctly, packet is served if prority==0
         self.sim_result.gather_results()
         return self.sim_result
+
+        # gather results for sim_result object
+        #raise RuntimeError(f"do_simulation_n_limit has ended before the limit was reached! \n rho={self.sim_param.RHO}")

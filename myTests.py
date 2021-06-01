@@ -5,7 +5,7 @@ from matplotlib import pyplot
 import unittest
 from part2_tests import DESTestExtended
 from part3_simstudy import *
-
+from part4_simstudy import *
 
 # sim = Simulation()
 #
@@ -15,6 +15,8 @@ from part3_simstudy import *
 
 #task_2_7_1()
 #task_3_2_1(la=1)
-task_3_2_2_2()
-pyplot.show()
+#task_3_2_2_2()
+#pyplot.show()
 
+#task_4_2_1(10, True)
+task_4_3_3(51)
