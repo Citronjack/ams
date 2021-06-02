@@ -279,7 +279,7 @@ class TimeIndependentCrosscorrelationCounter(TimeIndependentCounter):
         """
         # TODO Task 4.1.1: Your code goes here
         # error in last tasks with different seeds
-        if self.tic_1.get_var() != 0 or self.tic_2.get_var() != 0:
+        if self.tic_1.get_var() != 0 and self.tic_2.get_var() != 0:
             return self.get_cov()/numpy.sqrt(self.tic_1.get_var()*self.tic_2.get_var())
         else:
             return 0
@@ -370,7 +370,7 @@ class TimeIndependentAutocorrelationCounter(TimeIndependentCounter):
         else:
             return 0
 
-        return self.get_auto_cov(lag)/self.get_var() #tic.get_var()
+        #return self.get_auto_cov(lag)/self.get_var() #tic.get_var()
 
     # def get_vars(self, lag):
     #     arr_1 = numpy.array(self.tic.values) - self.tic.get_mean()  # numpy.array(self.tic.values[:-1*lag])  # much better implementation -1*lag! thx stack overflow!
