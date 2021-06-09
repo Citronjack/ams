@@ -1,5 +1,6 @@
 __author__ = 'Alexander Prommesberger'
 __matriclenumber__ = '03688679'
+import scipy
 
 
 class ChiSquare(object):

@@ -39,3 +39,7 @@ class SimState(object):
         :return: blocking probability of the system
         """
         return float(self.num_blocked_packets)/float(self.num_packets)
+
+    def reset(self):
+        self.num_packets = 0
+        self.num_blocked_packets = 0

@@ -114,7 +114,7 @@ class TimeIndependentCounter(Counter):
         # TODO Task 2.3.1: Your code goes here
         return numpy.sqrt(self.get_var())
 
-    def report_confidence_interval(self, alpha=0.05, print_report=True):
+    def report_confidence_interval(self, alpha=0.05, print_report=False):
         """
         Report a confidence interval with given significance level.
         This is done by using the t-table provided by scipy.
@@ -123,8 +123,16 @@ class TimeIndependentCounter(Counter):
         :return: half width of confidence interval h
         """
         # TODO Task 5.1.1: Your code goes here
-        # st.t.interval(1-alpha, df=len(self.values)-1, loc=self.get_mean()) https://www.statology.org/confidence-intervals-python/
-        pass
+        # https://www.statology.org/confidence-intervals-python/
+        #st.t.ppf()
+        #a, b = st.t.interval(1-alpha/2, df=len(self.values)-1, loc=self.get_mean())#, scale=st.sem(self.values)) # maybe scaling
+        #mid_2 = (a+b)/2
+        " I do not understand how the t test is different to these calculations"
+        z = st.t.ppf(1-alpha/2, df=len(self.values)-1)
+        mid = numpy.sqrt(self.get_var()/len(self.values))*z
+        if print_report:
+            print(f"{self.name}: Confidence interval: [{self.get_mean()-mid, self.get_mean()+mid}] ")
+        return mid
 
     def is_in_confidence_interval(self, x, alpha=0.05):
         """
@@ -134,7 +142,10 @@ class TimeIndependentCounter(Counter):
         :return: true, if sample is in confidence interval
         """
         # TODO Task 5.1.1: Your code goes here
-        pass
+        z = st.t.ppf(1-alpha/2, df=len(self.values)-1)
+        mid = numpy.sqrt(self.get_var()/len(self.values))*z
+        a, b = self.get_mean()-mid, self.get_mean()+mid
+        return a < x < b
 
     def report_bootstrap_confidence_interval(self, alpha=0.05, resample_size=5000, print_report=True):
         """
@@ -146,7 +157,20 @@ class TimeIndependentCounter(Counter):
         :return: lower and upper bound of confidence interval
         """
         # TODO Task 5.1.2: Your code goes here
-        pass
+        #values_rs = numpy.random.choice(self.values, size=[len(self.values)])
+        #while values_rs.size < len(self.values):
+        means = []
+        for _ in range(resample_size):
+            values_rs = numpy.random.choice(self.values, size=[len(self.values)], replace=True)
+            means.append(values_rs.mean())
+
+        la, lb = int(alpha/2.0*resample_size), int((1-alpha/2.0)*resample_size)
+        bootstramp_diff = numpy.array(means) - self.get_mean()
+        a, b = self.get_mean()-numpy.sort(bootstramp_diff)[lb], self.get_mean()-numpy.sort(bootstramp_diff)[la]
+
+        if print_report:
+            print(f"{self.name}: Bootstramp Confidence interval: [{a, b}] ")
+        return a, b
 
     def is_in_bootstrap_confidence_interval(self, x, resample_size=5000, alpha=0.05):
         """
@@ -157,7 +181,12 @@ class TimeIndependentCounter(Counter):
         :return: true, if sample is in confidence interval
         """
         # TODO Task 5.1.2: Your code goes here
-        pass
+        a, b = self.report_bootstrap_confidence_interval(alpha=alpha, resample_size=resample_size, print_report=False)
+        return a < x < b
+        # if a < x < b:
+        #     return True
+        # else:
+        #     return False
 
 
 class TimeDependentCounter(Counter):

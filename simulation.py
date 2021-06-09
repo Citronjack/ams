@@ -5,7 +5,8 @@ from systemstate import SystemState
 from event import EventChain, CustomerArrival, SimulationTermination
 from simresult import SimResult
 from simparam import SimParam
-
+from counter import TimeIndependentCounter
+import numpy as np
 
 from countercollection import CounterCollection
 from rng import RNG, ExponentialRNS, UniformRNS
@@ -150,7 +151,7 @@ class Simulation(object):
         self.sim_result.gather_results()
         return self.sim_result
 
-    def do_simulation_n_limit(self, n):
+    def do_simulation_n_limit(self, BATCH_SIZE, alpha, epsilon=0.0015, guard_pkts=50):
         """
         Call this function, if the simulation should stop after a given number of packets
         Do one simulation run. Initialize simulation and create first event.
@@ -160,7 +161,10 @@ class Simulation(object):
         """
         # insert first event
         self.event_chain.insert(CustomerArrival(self, 0))
-        #self.event_chain.insert(SimulationTermination(self, self.sim_param.SIM_TIME))
+        # block prob couter
+        cnt_pb = TimeIndependentCounter("bp")
+        guard_active = False
+        assert guard_pkts < BATCH_SIZE, "guard_pkts should be smaller than the BATCH_SIZE!"
         # start simulation (run)
         while not self.sim_state.stop:
             # TODO Task 4.3.2: Your code goes here
@@ -178,8 +182,19 @@ class Simulation(object):
                 event.process()
                 if event.priority == 0:
                     self.counter_collection.served_pkts += 1
-                if self.counter_collection.served_pkts >= n:
-                    self.sim_state.stop = True
+                if self.counter_collection.served_pkts == guard_pkts and guard_active:
+                    guard_active = False
+                    self.counter_collection.served_pkts = 0
+                if self.counter_collection.served_pkts == BATCH_SIZE:
+                    self.counter_collection.served_pkts = 0
+                    guard_active = True
+                    bp = self.sim_state.get_blocking_probability()
+                    cnt_pb.count(bp)
+                    if cnt_pb.report_confidence_interval(alpha, False) < epsilon and not np.isnan(cnt_pb.report_confidence_interval(alpha, False)):
+                        print(f"Conf. intervall for BATCHES:{self.sim_param.BATCH_SIZE} and alpha: {self.sim_param.ALPHA}"
+                              f" is {(cnt_pb.report_confidence_interval(alpha, False))}")
+                        self.sim_state.stop = True
+                    self.sim_state.reset() if self.sim_state.stop is False else -1
             else:
                 self.sim_state.stop = True
                 raise RuntimeError(f"The Simulation time is bigger than the event time! sim_state.now={self.sim_state.now} and "

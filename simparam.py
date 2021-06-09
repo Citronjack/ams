@@ -16,6 +16,11 @@ class SimParam(object):
         self.IAT = 490
         self.SIM_TIME = 100000
 
+        # BATCH_SIZE
+        self.BATCH_SIZE = 100
+
+        # alpha from t test
+        self.ALPHA = 0.05
         # number of runs before first evaluation
         self.NO_OF_RUNS = 1000
 

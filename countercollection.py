@@ -40,6 +40,9 @@ class CounterCollection(object):
         self.cnt_bp = TimeIndependentCounter("bp")
         self.hist_bp = TimeIndependentHistogram(self.sim, "bp")
 
+        #
+        self.cnt_tt = TimeIndependentCounter(f"conf{self.sim.sim_param.SIM_TIME // 1000}")
+
         # correlations
         self.cnt_iat_wt = TimeIndependentCrosscorrelationCounter("inter-arrival time vs. waiting time")
         self.cnt_iat_st = TimeIndependentCrosscorrelationCounter("inter-arrival time vs. service time")
