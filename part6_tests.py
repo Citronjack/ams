@@ -32,13 +32,13 @@ class DESTest(unittest.TestCase):
         [c1, c2] = cs.test_distribution(alpha, 5, 1)
 
         self.assertGreater(c2, c1, msg="Error in Chi Square Test. Hypothesis should not be rejected.")
-
+        print(c1, c2)
         emp_n, emp_x = numpy.histogram(values2, bins=20, range=(0, 10))
 
         cs = ChiSquare(emp_n=emp_n, emp_x=emp_x)
 
         [c1, c2] = cs.test_distribution(alpha, 5, 1)
-
+        print(c1, c2)
         self.assertGreater(c1, c2, msg="Error in Chi Square Test. Hypothesis should be rejected.")
 
 

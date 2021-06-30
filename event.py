@@ -73,6 +73,11 @@ class SimEvent(object):
                 return True
             else:
                 return False
+        # better solution
+        # if self.timestamp != other.timestamp:
+        #     return self.timestamp < other.timestamp
+        # else:
+        #     return self.priority < other.prority
 
 
 class CustomerArrival(SimEvent):

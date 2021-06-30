@@ -1,83 +1,33 @@
-import heapq
-from matplotlib import pyplot as pp
-import numpy
-
-h = []
-
-heapq.heappush(h, (1, "Being born a humansssssssssssssssssssss"))
-heapq.heappush(h, (1, "God creates the universe"))
-heapq.heappush(h, (5, "Satan creates the universe"))
+import numpy as np
 
 
-print(heapq.heappop(h))
+def trim_emp_n(emp_x, emp_n, t=5):
+    n_add = 0
+    idx_max = np.unravel_index(emp_n.argmax(), emp_n.shape)[0]
+    idxs = [i for i in range(idx_max)] + [i for i in range(len(emp_n)-1, idx_max, -1)]
+    n_idxs_del = []
+    x_idxs_del = []
+    for i in idxs:
+        if emp_n[i] < 5:
+            e = 1 if i < idx_max else -1
+            emp_n[i + e] += emp_n[i]
+            n_idxs_del.append(i)
+            x_idxs_del.append(i+e)
 
-heapq.heappop(h)
-
-
-try:
-
-    heapq.heappop(h)
-    heapq.heappop(h)
-
-except IndexError:
-    print("Heaplist is empty!")
-
-
-
-def vgl(x,y):
-    return x<y
-
-a = 1
-b = 2
-
-print(vgl(a,b))
-
-class Parent:
-    def __init__(self, sim):
-        self.sup = sim
+    emp_n = np.delete(emp_n, n_idxs_del)
+    emp_x = np.delete(emp_x, x_idxs_del)
+    return emp_x, emp_n
 
 
-class Child(Parent):
-    def __init__(self, sim):
+alpha = .1
+values = []
+values2 = []
+np.random.seed(1)
+for _ in range(100):
+    values.append(np.random.normal(5, 1))
+    values2.append(np.random.uniform(0, 10))
 
-        super().__init__(sim)
+emp_n, emp_x = np.histogram(values, bins=20, range=(0, 10))
+a,b = trim_emp_n(emp_x, emp_n)
 
-
-k = Child(1)
-k.sup
-
-
-
-#pp.show()
-
-a = [1,2,3,5,7,88,9,54,65]
-a.sort()
-b = a.index(54)
-print(a)
-
-pp.figure()
-b = ['erster', 'zweriter']
-for i in range(2):
-    pp.plot(a, label=f"{b[i]}")
-pp.legend()
-pp.show()
-#
-# def trymebitch(me):
-#     return True if me else False
-#
-# print(trymebitch(True))
-#
-# histogram1, bins1 = numpy.histogram([i % 7 for i in range(5, 50)], bins=range(0, 7))
-# histogram2, bins2 = numpy.histogram([i % 7 for i in range(10, 55)], bins=range(0, 7))
-#
-# width_of_bins = (bins1[1] - bins1[0]) / 2
-# fig, ax = pp.subplots()
-# rects1 = ax.bar(numpy.ndarray(bins1) - width_of_bins / 2, histogram1, label='sda', color='r')
-# rects2 = ax.bar(numpy.ndarray(bins2) + width_of_bins / 2, histogram2, label='sd', color='g')
-# pp.title("Side by Side stuff")
-# #ax.legend()
-# ax.set_xticks(bins1)
-# fig.tight_layout()
-#
-# pp.show()
-# import matplotlib
+print("fin")
