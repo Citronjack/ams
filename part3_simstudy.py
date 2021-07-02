@@ -1,5 +1,4 @@
-__author__ = 'Alexander Prommesberger'
-__matriclenumber__ = '03688679'
+
 """
 This file should be used to keep all necessary code that is used for the verification section in part 3 of the
 programming assignment. It contains tasks 3.2.1 and 3.2.2.

@@ -1,5 +1,4 @@
-__author__ = 'Alexander Prommesberger'
-__matriclenumber__ = '03688679'
+
 from simstate import SimState
 from systemstate import SystemState
 from event import EventChain, CustomerArrival, SimulationTermination

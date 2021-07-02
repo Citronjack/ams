@@ -1,5 +1,4 @@
-__author__ = 'Alexander Prommesberger'
-__matriclenumber__ = '03688679'
+
 import math
 from random import Random
 

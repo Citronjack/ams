@@ -1,5 +1,4 @@
-__author__ = 'Alexander Prommesberger'
-__matriclenumber__ = '03688679'
+
 from counter import TimeIndependentCrosscorrelationCounter, TimeIndependentAutocorrelationCounter
 from counter import TimeIndependentCounter, TimeDependentCounter
 from histogram import TimeIndependentHistogram, TimeDependentHistogram
