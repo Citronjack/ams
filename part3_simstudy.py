@@ -1,5 +1,4 @@
-__author__ = 'Alexander Prommesberger'
-__matriclenumber__ = '03688679'
+
 from rng import *
 from matplotlib import pyplot as pp
 import numpy as np
